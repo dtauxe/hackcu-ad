@@ -1,2 +1,2 @@
 # hackcu-ad
-Repo for code made at the HackCU hackathon
+Repo for code made at the HackCU hackathon.
