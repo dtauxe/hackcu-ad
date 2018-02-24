@@ -23,10 +23,16 @@ class Application(tk.Frame):
         canvasW = 800
         canvasH = 450
 
-        canvas = tk.Canvas(self, width=canvasW, height=canvasH)
-        rect_color = "#FF00FF"
-        canvas.create_rectangle(10, 20, 400, 300, outline=rect_color, fill=rect_color)
-        canvas.create_rectangle(1, 1, canvasW, canvasH)
+        canvas = tk.Canvas(self, width=canvasW, height=canvasH, bg="white")
+        canvas.create_rectangle(1, 1, canvasW, canvasH, outline="black")
+
+        # TODO draw axis
+
+        line_color = "black"
+        numPts = 100
+        for i in range(numPts):
+            
+
         canvas.pack(fill=tk.BOTH, expand=1)
 
         self.QUIT = tk.Button(self, text="QUIT", fg="red", command=root.destroy)
