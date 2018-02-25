@@ -1,5 +1,5 @@
 #pl.ylabel(r'$x_{n}$') - TEX stuff
-from numpy import inf,pi,cos,sin,heaviside
+from numpy import inf,pi,cos,sin
 from sympy import fourier_transform,plot,exp,symbols,Heaviside
 from sympy.abc import t,s
 import numpy as np
@@ -42,9 +42,10 @@ def polePlotZ(pole,roc):
     # ax.grid(True)
     # pl.show()
 
-fxn = input("Enter function: ")
-[thePole,roc] = poleSeeker(fxn)
-polePlotZ(thePole,roc)
+if __name__ == '__main__':
+    fxn = input("Enter function: ")
+    [thePole,roc] = poleSeeker(fxn)
+    polePlotZ(thePole,roc)
 
 # vectSize = 15
 # n,u = symbols('n,u')

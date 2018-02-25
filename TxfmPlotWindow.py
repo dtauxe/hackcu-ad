@@ -6,6 +6,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import Qt
 
 from TxfmPlotHelper import TxfmPlotHelper
+from poleSeeker import poleSeeker
 
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as QMatFigCanvas
 #from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as QMatNavToolbar
@@ -25,51 +26,15 @@ class TxfmPlotWindow (QMainWindow):
         # Soft-coded stuffs
         frameStyle = QFrame.StyledPanel
 
-        tph = TxfmPlotHelper()
-        # Functions for performing the transforms
-        def doTransform():
-            self.statusBar().showMessage("Running")
-            txfm = txfmSelBox.currentText()
-            if (txfm == 'Z'):
-                QMessageBox.warning(self, "Not Implemented", "Z-transform has not yet been implemented")
-            else:
-                try:
-                    result = tph.Transform(tEdit.text(), txfm)
-                except:
-                    QMessageBox.critical(self, "Error", "Unable to transform " + tEdit.text())
-                    result = tEdit.text(), [0]
-            # Deal with result
-            self.statusBar().showMessage("Plotting")
-            res_expr = result[1][0] if txfm == 'Laplace' else result
-            sEdit.setText(str(res_expr))
-            drawGraphs(result, txfm)
-            self.statusBar().showMessage("Ready")
-
-        def doInvTransform():
-            self.statusBar().showMessage("Running")
-            txfm = "Inv" + txfmSelBox.currentText()
-            if (txfm == 'Z'):
-                QMessageBox.warning(self, "Not Implemented", "Z-transform has not yet been implemented")
-            else:
-                try:
-                    result = tph.Transform(sEdit.text(), txfm)
-                except:
-                    QMessageBox.critical(self, "Error", "Unable to transform " + sEdit.text())
-                    result = sEdit.text(), 0
-            # Deal with result
-            self.statusBar().showMessage("Plotting")
-            tEdit.setText(str(result[1]))
-            drawGraphs(result, txfm)
-            self.statusBar().showMessage("Ready")
-
         # Function for drawing the graphs based on current results
         def drawGraphs(results, txfm):
             # Helper to try calling plotter
             def tryPlot(canvas, expr, x):
                 try:
                     p = tph.plot(expr, x)
-                except:
+                except Exception as e:
                     QMessageBox.critical(self, "Error", "Unable to plot " + str(expr))
+                    print(e)
                     p = tph.plot("0", x)
                 self.plot(canvas, p)
 
@@ -84,14 +49,56 @@ class TxfmPlotWindow (QMainWindow):
             tryPlot(sigCanvas, tExpr, 't')
 
             if (txfm.endswith('Laplace') or txfm.endswith('Z')):
-                FtLabel.setText("ROC")
+                FtLabel.setText("Pole-Zero Plot")
+                sLabel.setText("S Domain")
                 # TODO draw pole-zero plot
             else: # Fourier
                 FtLabel.setText("Fourier Transform")
+                sLabel.setText("w Domain")
                 # Plot sExpr
-                tryPlot(FtCanvas, sExpr, 's')
+                tryPlot(FtCanvas, "abs("+str(sExpr)+")", 'w')
 
-        #self.setCentralWidget(QWidget(self))
+        # Function for updating the Properties
+        def updateProperties(results, txfm):
+            # Currently this has a whole lot TODO
+            if (txfm == 'Z'):
+                roc = poleSeeker(results[0])
+                rocLabel.setText("ROC: |z| "+('>' if (roc[1]) else '<')+" " + roc[0])
+            else:
+                rocLabel.setText("ROC: N/A")
+
+        tph = TxfmPlotHelper()
+        # Functions for performing the transforms
+        def doTransform():
+            self.statusBar().showMessage("Running")
+            txfm = txfmSelBox.currentText()
+            try:
+                result = tph.Transform(tEdit.text(), txfm)
+            except:
+                QMessageBox.critical(self, "Error", "Unable to transform "+tEdit.text())
+                result = tEdit.text(), [0]
+            # Deal with result
+            self.statusBar().showMessage("Plotting")
+            res_expr = result[1][0] if txfm == 'Laplace' else result[1]
+            sEdit.setText(str(res_expr))
+            drawGraphs(result, txfm)
+            updateProperties(result, txfm)
+            self.statusBar().showMessage("Ready")
+
+        def doInvTransform():
+            self.statusBar().showMessage("Running")
+            txfm = "Inv" + txfmSelBox.currentText()
+            try:
+                result = tph.Transform(sEdit.text(), txfm)
+            except:
+                QMessageBox.critical(self, "Error", "Unable to transform "+sEdit.text())
+                result = sEdit.text(), 0
+            # Deal with result
+            self.statusBar().showMessage("Plotting")
+            tEdit.setText(str(result[1]))
+            drawGraphs(result, txfm)
+            updateProperties(result, txfm)
+            self.statusBar().showMessage("Ready")
 
         QToolTip.setFont(QFont('SansSerif', 10))
 
@@ -103,7 +110,7 @@ class TxfmPlotWindow (QMainWindow):
 
         # Items
         exitAct = QAction('E&xit', self)
-        exitAct.setShortcut('Ctrl+Q')
+        #exitAct.setShortcut('Ctrl+Q')
         exitAct.setStatusTip("Exit application")
         exitAct.triggered.connect(qApp.quit)
         fileMenu.addAction(exitAct)
@@ -150,6 +157,8 @@ class TxfmPlotWindow (QMainWindow):
         
         # Left Column
         gridL = QGridLayout()
+        gridL.setColumnStretch(1,1)
+        gridL.setColumnStretch(2,1)
         LFrame = QFrame()
         LFrame.setLayout(gridL)
         LFrame.setFrameShape(frameStyle)
@@ -234,8 +243,8 @@ class TxfmPlotWindow (QMainWindow):
             # refresh canvas
             canvas.draw()
 
+## MAIN for testing
 if __name__ == '__main__':
-    
     app = QApplication(sys.argv)
     window = TxfmPlotWindow()
     sys.exit(app.exec_())

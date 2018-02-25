@@ -11,7 +11,7 @@ from sympy import plot, Heaviside, sin, cos, tan, exp, re, im, symbols
 
 u = Heaviside
 I = j = 1j
-t, n, s, z = symbols("t n s z")
+t, n, s, z, w = symbols("t n s z w")
 
 class TxfmPlotHelper:
     def __init__(self):
@@ -19,14 +19,22 @@ class TxfmPlotHelper:
 
     # Calculate a transform
     def Transform(self, expr, txfm):
+        if (txfm == 'Z'):
+            raise Exception
+
+        x = 'w' if txfm.endswith('Fourier') else 's' # Transformed unit
         f = eval(expr, globals(), locals())
         #print(f)
         if (txfm == 'Fourier' or txfm == 'Laplace'):
-            F = eval(txfm+"(f, t, s)", globals(), locals())
+            F = eval(txfm+"(f, t, "+x+")", globals(), locals())
         elif (txfm == 'InvFourier' or txfm == 'InvLaplace'):
-            F = eval(txfm+"(f, s, t)", globals(), locals())
+            F = eval(txfm+"(f, "+x+", t)", globals(), locals())
         return (f, F)
 
     # Generate a sympy plot
     def plot(self, expr, x):
+        #f = eval(expr, globals(), locals())
+        #if (x == 'w'): # Fourier - convert from f to w
+            #f = f(w/(2*pi))
+            #expr = str(expr).replace('w', "w/(2*pi)")
         return eval("plot("+str(expr)+",("+x+",-2*pi, 2*pi), show=False)", globals(), locals())
