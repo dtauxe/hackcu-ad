@@ -10,7 +10,7 @@ import re
 def poleSeeker(fxn):
     pattern0 = 'u\[-(\d*\*)?n'
     pattern1 = 'u\[(\d*\*)?n'
-    pattern2 = '(\d*)(\.)(\d*)\*\*'
+    pattern2 = '-?(\d*)?(\.)?(\d*)\*\*'
     #small error checking
     if (re.search(pattern0,fxn) and re.search(pattern1,fxn)):
         print("Ya messed up real bad")
@@ -21,8 +21,8 @@ def poleSeeker(fxn):
     else:
         print("ya done messed up")
     #searching for z-trans pole
-    m = re.search(pattern2,fxn)
-    pole = eval(m.group(1)+m.group(2)+m.group(3))
+    ss = fxn.split("**")[0]
+    pole = ss.split("*")[-1]
     return [pole,roc]
 
 def polePlotZ(pole,roc):
