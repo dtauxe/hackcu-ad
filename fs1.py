@@ -1,9 +1,10 @@
 import numpy as np
 from sympy.abc import t,s
-from sympy import exp,symbols,pi
+from sympy import exp,symbols,pi,integrate,Heaviside,sin,cos
 from matplotlib import pyplot as pl
 from pylab import stem
 import re
+import cmath
 
 #POA: check 3 classes, return coefficients and freq positions
 
@@ -48,12 +49,27 @@ def sinusoid(expr):
 #sinusoid/exponential, beware of defsult assumption
 #for piecewise functions enter p in front
 def general(expr,period=2*pi,bounds=[0,2*pi]):
-    
+    cn = np.zeros(40)
+    freq = np.zeros(40)
+    t = symbols("t")
+    I = 1j
+    for n in range(-20,20):
+        freq[n] = n
+        z = 1*cos(n*t) + I*sin(n*t)
+        f = '('+str(expr)+')*'+str(z)
+        f = eval(f)
+        temp = integrate(f,(t,bounds[0],bounds[1]))
+        cn[n] = abs(temp)
+    coef = cn
+    print(coef[0],coef[1],coef[2],'\n')
+    print(coef,freq)
     return [coef,freq]
 
-fxn = input("Function: ")
-period = 2*pi
-[coef,freq] = general(fxn,period)
+#fxn = input("Function: ")
+fxn = Heaviside(t)-Heaviside(t-1)
+period = 2
+bounds = [0,2]
+[coef,freq] = general(fxn,period,bounds)
 
 #stem([coef],[freq],'-')
 # pl.xlabel('Time (n)')
