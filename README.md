@@ -1,4 +1,4 @@
-# Signal Transform Plotter
+# Signal Transform Plotter (i.e. FOURIER - Fantastically Outrageously Underestimated Really Intensively Exciting Routine)
 
 This is a program to plot signals and their transforms.
 
