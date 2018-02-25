@@ -37,7 +37,7 @@ class TxfmPlotWindow (QMainWindow):
                     result = tph.Transform(tEdit.text(), txfm)
                 except:
                     QMessageBox.critical(self, "Error", "Unable to transform " + tEdit.text())
-                    result = tEdit.text(), 0
+                    result = tEdit.text(), [0]
             # Deal with result
             self.statusBar().showMessage("Plotting")
             res_expr = result[1][0] if txfm == 'Laplace' else result
