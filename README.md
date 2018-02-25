@@ -2,21 +2,21 @@
 
 This is a program to plot signals and their transforms.
 
-WHAT'S IT DO?
+What is it?
 =============
-The idea is to provide an easy way to convert between signals and their Laplace/Fourier/Ztransforms.
+The idea is to provide an easy way to convert between signals and their Laplace/Fourier/Z-transforms.
 
-# How to use
+## How to use
 
 Simply enter a signal (or its transform) into the appropriate box and hit 'Enter' or the corresponding arrow button to transform the signal into its other representation and graph both (if available). One day, you will also be able to see some of the signal's properties in the lower left corner, but that is not implemented yet.
 
-REQUIREMENTS
+Requirements
 ============
 * Python3
 * SymPy
 * PyQt5
 
-RUNNING
+Running
 =======
 Run it however you prefer to run Python3 programs, e.g.
 
@@ -26,7 +26,7 @@ Depending on your environment, you may be able to get away with:
 
     ./main.py
 
-TODO
+To Do
 ====
 * Z-transform
 * Plotting of discrete functions
