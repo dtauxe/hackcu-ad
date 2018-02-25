@@ -11,29 +11,17 @@ from sympy.plotting import plot_parametric
 from sympy import plot, Heaviside, sin, cos, tan, exp, re, im, symbols
 
 # Class used for parsing inputs from the command line
-class CmdLine():
-
-    # List of members to import and give names w/out prefix
-    #imports = {'sympy': ['sin', 'cos', 'tan', 'exp', 'plot'],
-    #        'np': ['e', 'pi']}
+class CmdLine:
 
     # Constructor
     def __init__(self):
         pass
-
-    # Plot the function
-    #def plot(self, func):
-    #    # TODO
-    #    print ("Not yet done")
 
     # Begin parsing commands
     def begin(self):
         # make some things have nicer names
         i = j = 1j
         u = Heaviside
-        #for prefix in self.imports:
-        #    for member in self.imports[prefix]:
-        #        exec(member + "=" + prefix + "." + member)
 
         while (True):
             # Prompt for input
