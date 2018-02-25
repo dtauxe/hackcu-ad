@@ -34,3 +34,11 @@ class CmdLine:
             except Exception as e:
                 print ("Error: " + str(e))
 
+## MAIN for testing
+if __name__ == '__main__':
+    print ("Welcome to the calculator thingy!")
+    print ("Type \"quit\" to quit")
+
+    # We encapsulate this in a class to avoid putting things in the global namespace
+    cmdParser = CmdLine()
+    cmdParser.begin()
